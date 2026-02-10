@@ -2,7 +2,7 @@ const Note = require('../models/Note')
 
 const getNotes  = async (req , res)=>{
   try{
-  const notes = await Note.find();   // To get all notes
+  const notes = await Note.find({user: req.user.id});   // To get all notes
     res.status(200).json(notes); //success
   }catch(error){
     res.status(500).json({message : error.message}); //server eror
@@ -18,15 +18,67 @@ const createNote = async (req, res) =>{
 
     const newNote = new Note({
       title,
-      content
+      content,
+      user: req.user.id
     });
 
     const savedNote = await newNote.save(); // newly made notes will be saved 
-    res.send(201).json(savedNote);
+    res.status(201).json(savedNote);
 
   }catch(error){
      res.status(500).json({message :"error"});
   }
 };
 
-module.exports = {getNotes , createNote};
+const updateNote = async(req, res) =>{
+  try{
+    const {id} = req.params;
+    const {title , content } = req.body;
+
+    const updatedNote = await Note.findByIdAndUpdate(
+      id,
+      {title , content},
+      {new : true}
+    );
+
+    if(!updatedNote){
+      return res.status(404).json({message : "Notes not found"});
+    }
+
+    if(updatedNote.user.toString() !== req.user.id){
+      return res.status(403).json({message : "Not authorized"});
+    }
+
+    updatedNote.title = title || updatedNote.title;
+    updatedNote.content = content || updatedNote.content;
+    
+    const finalNote = await updatedNote.save();
+    return res.status(200).json(finalNote);
+    
+  }catch(error){
+   return res.status(500).json({message  : error.message});
+  }
+};
+
+
+const deleteNote = async(req, res) =>{
+  try{
+    const {id} = req.params;
+   
+    const deletedNote = await Note.findByIdAndDelete(id);
+
+    if(!deletedNote){
+      return res.status(404).json({message : "Notes not found"});
+    }
+
+     if (deleteNote.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+     await deleteNote.deleteOne();
+    return res.status(200).json({message : "Note Deleted Successfully"});
+    }catch(error){
+   return res.status(500).json({message  : "error.message"});
+  }
+};
+
+module.exports = {getNotes , createNote , updateNote , deleteNote};
