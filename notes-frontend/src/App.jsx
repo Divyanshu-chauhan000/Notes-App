@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/DashBoard';
 import AddNotes from './pages/AddNote';
-import EditNotes from './pages/EditNote';
+
 import ProtectedRoutes from './components/ProtectedRoutes';
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
       {/* Here Private or Protected Routes */}
       <Route path='/dashboard' element={<ProtectedRoutes><Dashboard/></ProtectedRoutes>}  />
       <Route path='/add-note' element={<ProtectedRoutes><AddNotes/></ProtectedRoutes>}  />
-      <Route path='/edit-note' element={<ProtectedRoutes><EditNotes/></ProtectedRoutes>}  />
+      {/* <Route path='/edit-note' element={<ProtectedRoutes><EditNotes/></ProtectedRoutes>}  /> */}
     </Routes>
    </Router>
   )

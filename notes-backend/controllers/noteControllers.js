@@ -11,6 +11,8 @@ const getNotes  = async (req , res)=>{
 
 const createNote = async (req, res) =>{
   try{
+    console.log("req.user:", req.user);
+
     const {title, content } = req.body;
     if(!title || !content){
       return res.status(400).json({message : "Title and Content are required"});
@@ -24,6 +26,8 @@ const createNote = async (req, res) =>{
 
     const savedNote = await newNote.save(); // newly made notes will be saved 
     res.status(201).json(savedNote);
+  console.log("Saved Note:", savedNote);
+console.log("Collection:", savedNote.collection.name);
 
   }catch(error){
      res.status(500).json({message :"error"});
@@ -65,19 +69,24 @@ const deleteNote = async(req, res) =>{
   try{
     const {id} = req.params;
    
-    const deletedNote = await Note.findByIdAndDelete(id);
+    const note = await Note.findById(
+      {
+        _id : id,
+        user: req.user.id,
+      }
+    );
 
-    if(!deletedNote){
+    if(!note){
       return res.status(404).json({message : "Notes not found"});
     }
 
-     if (deleteNote.user.toString() !== req.user.id) {
+     if (note.user.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not authorized" });
     }
-     await deleteNote.deleteOne();
+     await note.deleteOne();
     return res.status(200).json({message : "Note Deleted Successfully"});
     }catch(error){
-   return res.status(500).json({message  : "error.message"});
+   return res.status(500).json({message  : error.message});
   }
 };
 
