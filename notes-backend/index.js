@@ -1,4 +1,7 @@
 const express = require("express");  // for Http server
+const cors = require('cors');
+
+
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
 
@@ -8,6 +11,9 @@ const app = express(); // It is the Express Application Instance
 app.use(express.json());  // so that we can get req.body in JSON formate <---Middleware
  
 connectDB();
+
+app.use(cors());
+
 
 const noteRoute = require('./routes/noteRoute');
 app.use('/api/notes', noteRoute);
