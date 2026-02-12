@@ -12,7 +12,7 @@ const App = () => {
    <Router>
     <Routes>
       {/* here are Public routes */}
-      <Route path='/login' element={<Login/>} />
+      <Route path='/' element={<Login/>} />
       <Route path='/register' element={<Register/>} />
 
       {/* Here Private or Protected Routes */}

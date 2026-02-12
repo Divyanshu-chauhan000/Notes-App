@@ -7,7 +7,8 @@ const navigate = useNavigate();
 
 const handleLogout = ()=> {
   localStorage.removeItem('token');
-  navigate('/login')
+  navigate('/')
+  
 }
   return (
     <div className='bg-white shadow p-4 flex justify-between items-center'>
